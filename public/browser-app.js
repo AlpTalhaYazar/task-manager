@@ -7,15 +7,15 @@ const formAlertDOM = document.querySelector('.form-alert')
 const showTasks = async () => {
   loadingDOM.style.visibility = 'visible'
   try {
-    const {
-      data: { tasks },
-    } = await axios.get('/api/v1/tasks')
-    if (tasks.length < 1) {
+    const response = await fetch('/api/v1/tasks')
+    const data = await response.json()
+    
+    if (data.length < 1) {
       tasksDOM.innerHTML = '<h5 class="empty-list">No tasks in your list</h5>'
       loadingDOM.style.visibility = 'hidden'
       return
     }
-    const allTasks = tasks
+    const allTasks = data
       .map((task) => {
         const { completed, _id: taskID, name } = task
         return `<div class="single-task ${completed && 'task-completed'}">
@@ -39,7 +39,7 @@ const showTasks = async () => {
     tasksDOM.innerHTML = allTasks
   } catch (error) {
     tasksDOM.innerHTML =
-      '<h5 class="empty-list">There was an error, please try later....</h5>'
+      '<h5 class="empty-list">There was an error, please try later....The error is: ' + error + '</h5>'
   }
   loadingDOM.style.visibility = 'hidden'
 }
@@ -54,7 +54,7 @@ tasksDOM.addEventListener('click', async (e) => {
     loadingDOM.style.visibility = 'visible'
     const id = el.parentElement.dataset.id
     try {
-      await axios.delete(`/api/v1/tasks/${id}`)
+      await axios.delete(`http://localhost:3000/api/v1/tasks/${id}`)
       showTasks()
     } catch (error) {
       console.log(error)
@@ -70,7 +70,7 @@ formDOM.addEventListener('submit', async (e) => {
   const name = taskInputDOM.value
 
   try {
-    await axios.post('/api/v1/tasks', { name })
+    await axios.post('http://localhost:3000/api/v1/tasks', { name })
     showTasks()
     taskInputDOM.value = ''
     formAlertDOM.style.display = 'block'
