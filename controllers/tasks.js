@@ -54,16 +54,20 @@ const getTask = async (req, res) => {
 
 const updateTask = async (req, res) => {
     try {
-        var task = await Task.findByIdAndUpdate(req.params.id);
+        const task = new Task(req.body);
+        
+        var updatedTask = await Task.findByIdAndUpdate(req.params.id, 
+            { name: task.name, completed: task.completed },
+            { new: true, runValidators: true });
 
-        if (!task) {
+        if (!updatedTask) {
             return res.status(StatusCodes.NOT_FOUND)
                 .send({
                     message: "Task not found with id " + req.params.id
                 });
         }
 
-        res.json(task);
+        res.json(updatedTask);
     } catch (error) {
         if (error.kind === 'ObjectId') {
             return res.status(StatusCodes.NOT_FOUND)
@@ -71,6 +75,8 @@ const updateTask = async (req, res) => {
                     message: "Task not found with id " + req.params.id
                 });
         }
+
+        console.log(error);
 
         return res.status(StatusCodes.INTERNAL_SERVER_ERROR)
             .send({
