@@ -1,8 +1,11 @@
 const { StatusCodes } = require('http-status-codes');
+const Result = require('../utils/Result');
 
 const NotFound = (req, res) => {
+    const result = Result.failure('Route does not exist');
+
     res.status(StatusCodes.NOT_FOUND)
-        .send('Route does not exist');
+        .json(result);
 }
 
 module.exports = NotFound;
