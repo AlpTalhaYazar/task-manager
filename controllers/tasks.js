@@ -23,16 +23,16 @@ const createTask = asyncWrapper(async (req, res) => {
         .json(result);
 });
 
-const getTask = asyncWrapper(async (req, res) => {
+const getTask = asyncWrapper(async (req, res, next) => {
     const { id: taskID } = req.params;
 
     const task = await Task.findOne({ _id: taskID });
 
     if (!task) {
-        const result = Result.failure(`No task with id : ${taskID}`);
+        const error = new Error(`No task with id : ${taskID}`);
+        error.status = StatusCodes.NOT_FOUND;
 
-        return res.status(StatusCodes.NOT_FOUND)
-            .json(result);
+        return next(error);
     }
 
     const result = Result.success(task);
@@ -41,7 +41,7 @@ const getTask = asyncWrapper(async (req, res) => {
         .json(result);
 });
 
-const updateTask = asyncWrapper(async (req, res) => {
+const updateTask = asyncWrapper(async (req, res, next) => {
     const { id: taskID } = req.params;
 
     const task = await Task.findOneAndUpdate({ _id: taskID }, req.body,
@@ -51,10 +51,10 @@ const updateTask = asyncWrapper(async (req, res) => {
         });
 
     if (!task) {
-        const result = Result.failure(`No task with id : ${taskID}`);
+        const error = new Error(`No task with id : ${taskID}`);
+        error.status = StatusCodes.NOT_FOUND;
 
-        return res.status(StatusCodes.NOT_FOUND)
-            .json(result);
+        return next(error);
     }
 
     const result = Result.success(task);
@@ -63,17 +63,17 @@ const updateTask = asyncWrapper(async (req, res) => {
         .json(result);
 });
 
-const deleteTask = asyncWrapper(async (req, res) => {
+const deleteTask = asyncWrapper(async (req, res, next) => {
     const { id: taskID } = req.params;
 
     const task = await Task.findOneAndDelete
         ({ _id: taskID });
 
     if (!task) {
-        const result = Result.failure(`No task with id : ${taskID}`);
+        const error = new Error(`No task with id : ${taskID}`);
+        error.status = StatusCodes.NOT_FOUND;
 
-        return res.status(StatusCodes.NOT_FOUND)
-            .json(result);
+        return next(error);
     }
 
     const result = Result.success(task);
