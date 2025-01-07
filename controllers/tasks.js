@@ -54,11 +54,12 @@ const getTask = async (req, res) => {
 
 const updateTask = async (req, res) => {
     try {
-        const task = new Task(req.body);
-        
-        var updatedTask = await Task.findByIdAndUpdate(req.params.id, 
-            { name: task.name, completed: task.completed },
-            { new: true, runValidators: true });
+        var updatedTask = await Task.findByIdAndUpdate(req.params.id,
+            req.body,
+            {
+                new: true,
+                runValidators: true
+            });
 
         if (!updatedTask) {
             return res.status(StatusCodes.NOT_FOUND)
