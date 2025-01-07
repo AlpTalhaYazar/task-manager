@@ -1,11 +1,11 @@
-const StatusCodes = require('http-status-codes');
-const Result = require('../utils/Result');
+import { StatusCodes } from 'http-status-codes';
+import { Result } from '../utils/Result.js';
 
-const errorHandler = (err, req, res, next) => {
+const errorHandlerMiddleware = (err, req, res, next) => {
     let result = Result.failure(err.message);
 
     res.status(err.statusCode || StatusCodes.INTERNAL_SERVER_ERROR)
         .json(result);
 }
 
-module.exports = errorHandler;
+export { errorHandlerMiddleware };

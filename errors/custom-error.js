@@ -9,4 +9,4 @@ const createCustomError = (message, statusCode) => {
     return new CustomError(message, statusCode);
 }
 
-module.exports = { createCustomError, CustomError };
+export { createCustomError, CustomError };

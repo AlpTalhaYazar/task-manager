@@ -1,11 +1,11 @@
-const { StatusCodes } = require('http-status-codes');
-const Result = require('../utils/Result');
+import { StatusCodes } from 'http-status-codes';
+import { Result } from '../utils/Result.js';
 
-const NotFound = (req, res) => {
+const notFoundMiddleware = (req, res) => {
     const result = Result.failure('Route does not exist');
 
     res.status(StatusCodes.NOT_FOUND)
         .json(result);
 }
 
-module.exports = NotFound;
+export { notFoundMiddleware };

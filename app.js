@@ -1,24 +1,22 @@
-require('dotenv').config();
-const express = require('express');
-const cors = require('cors');
+import 'dotenv/config';
+import express from 'express';
+import cors from 'cors';
+import { connectDB } from './db/connect.js';
+import { taskRoutes } from './routes/tasks.js';
+import { notFoundMiddleware } from './middleware/not-found.js';
+import { errorHandlerMiddleware } from './middleware/error-handler.js';
+
 const app = express();
-const connectDB = require('./db/connect');
-
-const taskRoutes = require('./routes/tasks');
-
-const notFound = require('./middleware/not-found');
-const errorHandler = require('./middleware/error-handler');
 
 // middleware
-
 app.use(cors());
 app.use(express.static('./public'));
 app.use(express.json());
 
 app.use('/api/v1/tasks', taskRoutes);
 
-app.use(notFound);
-app.use(errorHandler);
+app.use(notFoundMiddleware);
+app.use(errorHandlerMiddleware);
 
 const port = process.env.PORT || 3000;
 

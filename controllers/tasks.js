@@ -1,8 +1,8 @@
-const Task = require('../models/Task');
-const { StatusCodes } = require('http-status-codes');
-const asyncWrapper = require('../middleware/async');
-const Result = require('../utils/Result');
-const { createCustomError } = require('../errors/custom-error');
+import Task from '../models/Task.js';
+import { StatusCodes } from 'http-status-codes';
+import { asyncWrapper } from '../middleware/async.js';
+import { Result } from '../utils/Result.js';
+import { createCustomError } from '../errors/custom-error.js';
 
 const getAllTasks = asyncWrapper(async (req, res) => {
     const tasks = await Task.find({});
@@ -74,10 +74,4 @@ const deleteTask = asyncWrapper(async (req, res, next) => {
         .json(result);
 });
 
-module.exports = {
-    getAllTasks,
-    createTask,
-    getTask,
-    updateTask,
-    deleteTask
-};
+export { getAllTasks, createTask, getTask, updateTask, deleteTask };
