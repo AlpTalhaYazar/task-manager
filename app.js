@@ -7,6 +7,7 @@ const connectDB = require('./db/connect');
 const taskRoutes = require('./routes/tasks');
 
 const notFound = require('./middleware/not-found');
+const errorHandler = require('./middleware/error-handler');
 
 // middleware
 
@@ -17,6 +18,7 @@ app.use(express.json());
 app.use('/api/v1/tasks', taskRoutes);
 
 app.use(notFound);
+app.use(errorHandler);
 
 const port = process.env.PORT || 3000;
 
