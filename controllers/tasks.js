@@ -2,6 +2,7 @@ const Task = require('../models/Task');
 const { StatusCodes } = require('http-status-codes');
 const asyncWrapper = require('../middleware/async');
 const Result = require('../utils/Result');
+const { createCustomError } = require('../errors/custom-error');
 
 const getAllTasks = asyncWrapper(async (req, res) => {
     const tasks = await Task.find({});
@@ -29,10 +30,7 @@ const getTask = asyncWrapper(async (req, res, next) => {
     const task = await Task.findOne({ _id: taskID });
 
     if (!task) {
-        const error = new Error(`No task with id : ${taskID}`);
-        error.status = StatusCodes.NOT_FOUND;
-
-        return next(error);
+        return next(createCustomError(`No task with id : ${taskID}`, StatusCodes.NOT_FOUND));
     }
 
     const result = Result.success(task);
@@ -51,10 +49,7 @@ const updateTask = asyncWrapper(async (req, res, next) => {
         });
 
     if (!task) {
-        const error = new Error(`No task with id : ${taskID}`);
-        error.status = StatusCodes.NOT_FOUND;
-
-        return next(error);
+        return next(createCustomError(`No task with id : ${taskID}`, StatusCodes.NOT_FOUND));
     }
 
     const result = Result.success(task);
@@ -70,10 +65,7 @@ const deleteTask = asyncWrapper(async (req, res, next) => {
         ({ _id: taskID });
 
     if (!task) {
-        const error = new Error(`No task with id : ${taskID}`);
-        error.status = StatusCodes.NOT_FOUND;
-
-        return next(error);
+        return next(createCustomError(`No task with id : ${taskID}`, StatusCodes.NOT_FOUND));
     }
 
     const result = Result.success(task);
