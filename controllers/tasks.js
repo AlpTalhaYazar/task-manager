@@ -30,7 +30,13 @@ const getAllTasks = asyncWrapper(async (req, res) => {
   const querySort = sort.split(",").join(" ");
 
   const [tasks, total] = await Promise.all([
-    Task.find().where(queryFilter).sort(querySort).skip(skip).limit(pageLimit),
+    Task.find()
+      .where(queryFilter)
+      .sort(querySort)
+      .skip(skip)
+      .limit(pageLimit)
+      .lean()
+      .exec(),
     Task.countDocuments(queryFilter),
   ]);
 
