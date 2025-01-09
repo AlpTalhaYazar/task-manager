@@ -8,8 +8,9 @@ const getAllTasks = asyncWrapper(async (req, res) => {
   const {
     page = 1,
     limit = 10,
-    sort = "-createdAt",
     search = "",
+    sort = "-createdAt",
+    fields = "",
     ...queryFilter
   } = req.query;
 
@@ -35,6 +36,7 @@ const getAllTasks = asyncWrapper(async (req, res) => {
       .sort(querySort)
       .skip(skip)
       .limit(pageLimit)
+      .select(fields ? fields.split(",").join(" ") : "")
       .lean()
       .exec(),
     Task.countDocuments(queryFilter),
