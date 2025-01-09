@@ -5,46 +5,23 @@ import { Result, PaginationResult } from "../utils/Result.js";
 import { createCustomError } from "../errors/custom-error.js";
 
 const getAllTasks = asyncWrapper(async (req, res) => {
-  const {
-    page = 1,
-    limit = 10,
-    search = "",
-    sort = "-createdAt",
-    fields = "",
-    ...queryFilter
-  } = req.query;
-
-  const pageLimit = parseInt(limit);
-  const skip = (page - 1) * pageLimit;
-
-  if (page < 1) {
-    throw createCustomError("Page value must be greater than 0", 400);
-  }
-  if (limit < 1) {
-    throw createCustomError("Limit value must be greater than 0", 400);
-  }
-
-  if (search) {
-    queryFilter.name = { $regex: search, $options: "i" };
-  }
-
-  const querySort = sort.split(",").join(" ");
+  const { sort, pageNum, limitNum, skip, fields, ...queryFilter } =
+    req.queryFilter;
 
   const [tasks, total] = await Promise.all([
-    Task.find()
-      .where(queryFilter)
-      .sort(querySort)
-      .skip(skip)
-      .limit(pageLimit)
-      .select(fields ? fields.split(",").join(" ") : "")
+    Task.find(queryFilter)
+      .sort(req.queryFilter.sort)
+      .limit(req.queryFilter.limitNum)
+      .skip(req.queryFilter.skip)
+      .select(req.queryFilter.fields ? req.queryFilter.fields : "")
       .lean()
       .exec(),
     Task.countDocuments(queryFilter),
   ]);
 
-  const result = new PaginationResult(tasks, page, limit, total);
+  const result = new PaginationResult(tasks, pageNum, limitNum, total);
 
-  res.status(StatusCodes.OK).json(result);
+  res.status(200).json(result);
 });
 
 const createTask = asyncWrapper(async (req, res) => {
