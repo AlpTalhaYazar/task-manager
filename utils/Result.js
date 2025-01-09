@@ -13,3 +13,19 @@ export class Result {
         return new Result(false, null, error);
     }
 }
+
+export class PaginationResult extends Result {
+    constructor(data, page, limit, total) {
+        super(true, data, null);
+        this.page = page;
+        this.limit = limit;
+        this.total = total;
+        this.totalPages = Math.ceil(total / limit);
+        this.hasNext = page < this.totalPages;
+        this.hasPrevious = page > 1;
+    }
+
+    static create(data, page, limit, total) {
+        return new PaginationResult(data, page, limit, total);
+    }
+}
